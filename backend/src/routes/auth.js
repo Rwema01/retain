@@ -90,4 +90,74 @@ router.get("/me", protect, (req, res) => {
   });
 });
 
+/**
+ * PUT /api/auth/profile
+ * Body: { name, email }
+ */
+router.put("/profile", protect, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+
+    const existing = await User.findOne({
+      email: email.toLowerCase(),
+      _id: { $ne: req.user._id },
+    });
+    if (existing) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    req.user.name = name;
+    req.user.email = email.toLowerCase();
+    await req.user.save();
+
+    res.json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+/**
+ * PUT /api/auth/password
+ * Body: { currentPassword, newPassword }
+ */
+router.put("/password", protect, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Current and new passwords are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "New password must be at least 6 characters" });
+    }
+
+    const user = await User.findById(req.user._id);
+    const ok = await user.comparePassword(currentPassword);
+    if (!ok) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: "Password updated" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 export default router;

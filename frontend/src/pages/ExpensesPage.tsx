@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setFilter, setPage, resetFilters } from "../redux/filtersSlice";
+import { useDebounce } from "../hooks/useDebounce";
 import type { Category, Expense, PaginatedExpenses } from "../types";
 import ExpenseForm from "../components/ExpenseForm";
 
 export default function ExpensesPage() {
   const filters = useAppSelector((s) => s.filters);
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -18,12 +21,31 @@ export default function ExpensesPage() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
+  // Staged filters for advanced (date/amount) inputs
+  const [localStartDate, setLocalStartDate] = useState(filters.startDate);
+  const [localEndDate, setLocalEndDate] = useState(filters.endDate);
+  const [localMinAmount, setLocalMinAmount] = useState(filters.minAmount);
+  const [localMaxAmount, setLocalMaxAmount] = useState(filters.maxAmount);
+
+  // Debounce search input (300ms)
+  const debouncedSearch = useDebounce(filters.search, 300);
+
   // Load categories once
   useEffect(() => {
     api.get<Category[]>("/categories").then((r) => setCategories(r.data));
   }, []);
 
-  // Load expenses whenever filters change OR reloadKey is bumped
+  // Pick up ?q= from navbar global search
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) {
+      dispatch(setFilter({ search: q }));
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Load expenses whenever filters change OR reloadKey bumps
   useEffect(() => {
     setLoading(true);
     const params: Record<string, string | number> = {
@@ -32,7 +54,7 @@ export default function ExpensesPage() {
       sortBy: filters.sortBy,
       order: filters.order,
     };
-    if (filters.search) params.search = filters.search;
+    if (debouncedSearch) params.search = debouncedSearch;
     if (filters.category) params.category = filters.category;
     if (filters.paymentMethod) params.paymentMethod = filters.paymentMethod;
     if (filters.startDate) params.startDate = filters.startDate;
@@ -48,7 +70,26 @@ export default function ExpensesPage() {
         setTotal(r.data.total);
       })
       .finally(() => setLoading(false));
-  }, [filters, reloadKey]);
+  }, [filters, debouncedSearch, reloadKey]);
+
+  const applyAdvanced = () => {
+    dispatch(
+      setFilter({
+        startDate: localStartDate,
+        endDate: localEndDate,
+        minAmount: localMinAmount,
+        maxAmount: localMaxAmount,
+      })
+    );
+  };
+
+  const handleReset = () => {
+    setLocalStartDate("");
+    setLocalEndDate("");
+    setLocalMinAmount("");
+    setLocalMaxAmount("");
+    dispatch(resetFilters());
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this expense?")) return;
@@ -58,7 +99,6 @@ export default function ExpensesPage() {
 
   const openAdd = () => {
     setEditing(null);
-    // Force ExpenseForm to remount with a fresh state
     setShowForm(false);
     setTimeout(() => setShowForm(true), 0);
   };
@@ -83,7 +123,7 @@ export default function ExpensesPage() {
         </button>
       </div>
 
-      {/* Filter bar */}
+      {/* Quick live filters */}
       <div className="bg-white p-4 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-4 gap-3">
         <input
           placeholder="Search title…"
@@ -137,37 +177,69 @@ export default function ExpensesPage() {
             <option value="asc">↑ Asc</option>
           </select>
         </div>
-        <input
-          type="date"
-          value={filters.startDate}
-          onChange={(e) => dispatch(setFilter({ startDate: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="date"
-          value={filters.endDate}
-          onChange={(e) => dispatch(setFilter({ endDate: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="number"
-          placeholder="Min $"
-          value={filters.minAmount}
-          onChange={(e) => dispatch(setFilter({ minAmount: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="number"
-          placeholder="Max $"
-          value={filters.maxAmount}
-          onChange={(e) => dispatch(setFilter({ maxAmount: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      </div>
+
+      {/* Advanced filters with Apply */}
+      <div className="bg-white p-4 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">
+            Start date
+          </label>
+          <input
+            type="date"
+            value={localStartDate}
+            onChange={(e) => setLocalStartDate(e.target.value)}
+            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">
+            End date
+          </label>
+          <input
+            type="date"
+            value={localEndDate}
+            onChange={(e) => setLocalEndDate(e.target.value)}
+            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">
+            Min $
+          </label>
+          <input
+            type="number"
+            placeholder="0"
+            value={localMinAmount}
+            onChange={(e) => setLocalMinAmount(e.target.value)}
+            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Max $
+            </label>
+            <input
+              type="number"
+              placeholder="∞"
+              value={localMaxAmount}
+              onChange={(e) => setLocalMaxAmount(e.target.value)}
+              className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            onClick={applyAdvanced}
+            className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-900 transition self-end"
+          >
+            Apply
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-end">
         <button
-          onClick={() => dispatch(resetFilters())}
+          onClick={handleReset}
           className="text-sm text-slate-500 hover:text-slate-800 underline"
         >
           Reset filters

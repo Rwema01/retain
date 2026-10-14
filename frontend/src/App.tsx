@@ -6,6 +6,8 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ExpensesPage from "./pages/ExpensesPage";
 import BudgetPage from "./pages/BudgetPage";
+import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -38,7 +40,7 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AppLayout>
-                  <PlaceholderPage title="Dashboard" />
+                  <DashboardPage />
                 </AppLayout>
               </ProtectedRoute>
             }
@@ -69,6 +71,16 @@ export default function App() {
               <ProtectedRoute adminOnly>
                 <AppLayout>
                   <PlaceholderPage title="Admin" />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <ProfilePage />
                 </AppLayout>
               </ProtectedRoute>
             }
