@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import ExpensesPage from "./pages/ExpensesPage";
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -46,7 +47,7 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AppLayout>
-                  <PlaceholderPage title="Expenses" />
+                  <ExpensesPage />
                 </AppLayout>
               </ProtectedRoute>
             }
