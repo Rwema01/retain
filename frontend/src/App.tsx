@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ExpensesPage from "./pages/ExpensesPage";
+import BudgetPage from "./pages/BudgetPage";
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -57,7 +58,7 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AppLayout>
-                  <PlaceholderPage title="Budget" />
+                  <BudgetPage />
                 </AppLayout>
               </ProtectedRoute>
             }
