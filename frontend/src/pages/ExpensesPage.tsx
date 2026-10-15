@@ -260,7 +260,7 @@ export default function ExpensesPage() {
           expenses.map((e) => (
             <div
               key={e._id}
-              className="p-4 flex flex-wrap justify-between items-center gap-3"
+              className="p-4 flex flex-wrap items-center gap-3 md:justify-between"
             >
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-slate-800 truncate">

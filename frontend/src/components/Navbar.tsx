@@ -2,6 +2,15 @@ import { useState, type FormEvent } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
 export default function Navbar() {
   const { user, signout, isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -54,21 +63,21 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Global search */}
+        {/* Global search — equal heights on input + button */}
         <form
           onSubmit={handleSearch}
-          className="ml-auto hidden md:flex items-center"
+          className="ml-auto hidden md:flex items-stretch h-9 rounded-lg overflow-hidden border border-slate-300 focus-within:ring-2 focus-within:ring-blue-500"
         >
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search expenses…"
-            className="border border-slate-300 rounded-l-lg px-3 py-1.5 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 text-sm w-48 bg-white focus:outline-none"
           />
           <button
             type="submit"
-            className="bg-slate-800 text-white px-3 py-1.5 rounded-r-lg text-sm hover:bg-slate-900 transition"
+            className="bg-slate-800 text-white px-3 text-sm hover:bg-slate-900 transition"
           >
             Go
           </button>
@@ -78,11 +87,18 @@ export default function Navbar() {
         <div className="relative ml-auto md:ml-3">
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2 text-right px-2 py-1.5 rounded-lg hover:bg-slate-100 transition"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-100 transition"
           >
-            <div>
-              <p className="text-sm font-medium text-slate-800">{user.name}</p>
-              <p className="text-xs text-slate-500 capitalize">{user.role}</p>
+            <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center">
+              {initials(user.name)}
+            </span>
+            <div className="text-left hidden sm:block">
+              <p className="text-sm font-medium text-slate-800 leading-tight">
+                {user.name}
+              </p>
+              <p className="text-xs text-slate-500 capitalize leading-tight">
+                {user.role}
+              </p>
             </div>
             <svg
               className={`w-4 h-4 text-slate-400 transition ${

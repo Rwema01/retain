@@ -10,14 +10,6 @@ import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
-      <p className="text-slate-500 mt-2">Coming in the next bundle.</p>
-    </div>
-  );
-}
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
