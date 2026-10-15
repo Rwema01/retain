@@ -8,6 +8,7 @@ import ExpensesPage from "./pages/ExpensesPage";
 import BudgetPage from "./pages/BudgetPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -70,7 +71,7 @@ export default function App() {
             element={
               <ProtectedRoute adminOnly>
                 <AppLayout>
-                  <PlaceholderPage title="Admin" />
+                  <AdminPage />
                 </AppLayout>
               </ProtectedRoute>
             }
