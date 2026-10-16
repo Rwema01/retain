@@ -31,6 +31,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addCategory = async () => {
@@ -90,58 +91,50 @@ export default function AdminPage() {
   };
 
   if (loading || !insights) {
-    return (
-      <div className="max-w-6xl mx-auto p-6 text-slate-500">
-        Loading admin data…
-      </div>
-    );
+    return <div className="p-6 text-[#b8d4b8]">Loading admin data…</div>;
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Admin Dashboard</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
 
       {(message || error) && (
         <div
-          className={`text-sm p-3 rounded-lg ${
-            error ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"
-          }`}
+          className={`text-sm p-3 rounded-lg ${error
+              ? "bg-red-500/10 border border-red-500/30 text-red-400"
+              : "bg-accent/10 border border-accent/30 text-accent"
+            }`}
         >
           {error || message}
         </div>
       )}
 
-      {/* Platform metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Stat title="Users" value={insights.totalUsers.toString()} />
         <Stat title="Total Expenses" value={insights.totalExpenses.toString()} />
         <Stat title="Total Value" value={`$${insights.totalValue.toFixed(2)}`} />
-        <Stat
-          title="This Month"
-          value={insights.currentMonthCount.toString()}
-        />
+        <Stat title="This Month" value={insights.currentMonthCount.toString()} />
       </div>
 
-      {/* Category management */}
-      <section className="bg-white rounded-xl shadow-sm p-5 space-y-3">
-        <h2 className="font-bold text-slate-800">Manage Categories</h2>
+      <section className="bg-card border border-rim rounded-xl p-5 space-y-3">
+        <h2 className="font-bold text-ink">Manage Categories</h2>
 
         <div className="flex gap-2 flex-wrap">
           <input
             value={newCat}
             onChange={(e) => setNewCat(e.target.value)}
             placeholder="New category name"
-            className="flex-1 min-w-[180px] border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 min-w-[180px] bg-white text-black placeholder:text-gray-500 border border-rim rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
             onClick={addCategory}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+            className="bg-blue-950 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-500 transition"
           >
             Add
           </button>
         </div>
 
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-rim">
           {categories.map((c) => (
             <CategoryRow
               key={c._id}
@@ -153,30 +146,25 @@ export default function AdminPage() {
         </ul>
       </section>
 
-      {/* Top & Bottom 5 */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ListCard title="Top 5 Categories" items={insights.top5} />
         <ListCard title="Bottom 5 Categories" items={insights.bottom5} />
       </section>
 
-      {/* Spending per category */}
-      <section className="bg-white rounded-xl shadow-sm p-5">
-        <h2 className="font-bold text-slate-800 mb-3">Spending per Category</h2>
+      <section className="bg-card border border-rim rounded-xl p-5">
+        <h2 className="font-bold text-ink mb-3">Spending per Category</h2>
         {insights.spendingPerCategory.length === 0 ? (
-          <p className="text-slate-500 text-sm">No data yet.</p>
+          <p className="text-ink-muted text-sm">No data yet.</p>
         ) : (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-rim">
             {insights.spendingPerCategory.map((c) => (
-              <li
-                key={c._id}
-                className="py-2 flex justify-between items-center"
-              >
-                <span className="text-slate-700">
+              <li key={c._id} className="py-2 flex justify-between items-center">
+                <span className="text-ink">
                   {c.icon} {c.name}
                 </span>
-                <span className="text-slate-800 font-semibold">
+                <span className="text-ink font-semibold">
                   ${c.total.toFixed(2)}{" "}
-                  <span className="text-xs text-slate-400 font-normal">
+                  <span className="text-xs text-ink-muted/70 font-normal">
                     ({c.count})
                   </span>
                 </span>
@@ -186,35 +174,34 @@ export default function AdminPage() {
         )}
       </section>
 
-      {/* Recent activity */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <h2 className="font-bold text-slate-800 mb-3">Recent Expenses</h2>
-          <ul className="divide-y divide-slate-100">
+        <div className="bg-card border border-rim rounded-xl p-5">
+          <h2 className="font-bold text-ink mb-3">Recent Expenses</h2>
+          <ul className="divide-y divide-rim">
             {insights.recentExpenses.map((e) => (
               <li key={e._id} className="py-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="font-medium text-slate-800 truncate">
+                  <span className="font-medium text-ink truncate">
                     {e.title}
                   </span>
-                  <span className="font-semibold text-slate-800 whitespace-nowrap">
+                  <span className="font-semibold text-ink whitespace-nowrap">
                     ${e.amount.toFixed(2)}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-ink-muted">
                   {e.category?.icon} {e.category?.name}
                 </p>
               </li>
             ))}
           </ul>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <h2 className="font-bold text-slate-800 mb-3">Recent Users</h2>
-          <ul className="divide-y divide-slate-100">
+        <div className="bg-card border border-rim rounded-xl p-5">
+          <h2 className="font-bold text-ink mb-3">Recent Users</h2>
+          <ul className="divide-y divide-rim">
             {insights.recentUsers.map((u) => (
               <li key={u._id} className="py-2 text-sm">
-                <div className="font-medium text-slate-800">{u.name}</div>
-                <div className="text-xs text-slate-500">
+                <div className="font-medium text-ink">{u.name}</div>
+                <div className="text-xs text-ink-muted">
                   {u.email} · {u.role}
                 </div>
               </li>
@@ -228,9 +215,9 @@ export default function AdminPage() {
 
 function Stat({ title, value }: { title: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      <p className="text-sm text-slate-500">{title}</p>
-      <p className="text-2xl font-bold text-slate-800 mt-1">{value}</p>
+    <div className="bg-card border border-rim rounded-xl p-5">
+      <p className="text-sm text-ink-muted">{title}</p>
+      <p className="text-2xl font-bold text-ink mt-1">{value}</p>
     </div>
   );
 }
@@ -269,12 +256,12 @@ function CategoryRow({
             }
           }}
           autoFocus
-          className="flex-1 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 bg-white text-black border border-rim rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
         />
       ) : (
         <span
           onClick={() => setEditing(true)}
-          className="cursor-pointer text-slate-700 hover:text-slate-900 flex-1"
+          className="cursor-pointer text-ink hover:text-accent flex-1"
         >
           {category.icon} {category.name}
         </span>
@@ -282,14 +269,14 @@ function CategoryRow({
 
       <div className="flex items-center gap-2">
         {category.isDefault && (
-          <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+          <span className="text-xs bg-elevated border border-rim text-ink-muted px-2 py-0.5 rounded">
             default
           </span>
         )}
         <button
           disabled={category.isDefault}
           onClick={() => onDelete(category._id, category.name)}
-          className="text-sm text-red-600 hover:text-red-800 disabled:opacity-30 disabled:cursor-not-allowed font-medium"
+          className="text-sm text-red-400 hover:text-red-300 disabled:opacity-30 disabled:cursor-not-allowed font-medium"
         >
           Delete
         </button>
@@ -306,21 +293,21 @@ function ListCard({
   items: { _id: string; name: string; icon?: string; count: number; total: number }[];
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      <h2 className="font-bold text-slate-800 mb-3">{title}</h2>
+    <div className="bg-card border border-rim rounded-xl p-5">
+      <h2 className="font-bold text-ink mb-3">{title}</h2>
       {items.length === 0 ? (
-        <p className="text-slate-500 text-sm">No data yet.</p>
+        <p className="text-ink-muted text-sm">No data yet.</p>
       ) : (
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-rim">
           {items.map((c) => (
             <li
               key={c._id}
               className="py-2 flex justify-between items-center text-sm"
             >
-              <span className="text-slate-700">
+              <span className="text-ink">
                 {c.icon} {c.name}
               </span>
-              <span className="text-slate-500">
+              <span className="text-ink-muted">
                 {c.count} use{c.count === 1 ? "" : "s"}
               </span>
             </li>

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import TopBar from "./components/TopBar";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ExpensesPage from "./pages/ExpensesPage";
@@ -10,12 +12,18 @@ import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 
-
 function AppLayout({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
-      {children}
+    <div className="min-h-screen bg-[#021c04] flex">
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 min-w-0 flex flex-col">
+        <TopBar onMenuClick={() => setSidebarOpen(true)} />
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 md:px-6 py-8">
+  {children}
+</main>
+      </div>
     </div>
   );
 }

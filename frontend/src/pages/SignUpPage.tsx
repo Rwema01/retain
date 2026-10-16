@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Logo from "../components/Logo";
+import PasswordInput from "../components/PasswordInput";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -29,61 +31,55 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-base flex items-center justify-center p-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm space-y-4"
+        className="bg-card border border-rim p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-4"
       >
-        <div className="text-center mb-2">
-          <h1 className="text-3xl font-bold text-blue-600">Retain</h1>
-          <p className="text-slate-500 text-sm mt-1">Create your account</p>
+        <div className="flex flex-col items-center mb-4 space-y-3">
+          <Logo size="lg" variant="inline" />
+          <p className="text-ink-muted text-sm">Create your account</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-lg">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Name
-          </label>
+          <label className="block text-sm font-medium text-ink mb-1">Name</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-white text-black placeholder:text-gray-500 rounded-lg px-3 py-2 border border-rim focus:outline-none focus:ring-2 focus:ring-accent"
             placeholder="Your name"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Email
-          </label>
+          <label className="block text-sm font-medium text-ink mb-1">Email</label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-white text-black placeholder:text-gray-500 rounded-lg px-3 py-2 border border-rim focus:outline-none focus:ring-2 focus:ring-accent"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Password
           </label>
-          <input
-            type="password"
+          <PasswordInput
             required
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="At least 6 characters"
           />
         </div>
@@ -91,14 +87,17 @@ export default function SignUpPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+          className="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-medium hover:bg-blue-950 disabled:opacity-50 transition"
         >
           {loading ? "Creating account…" : "Sign Up"}
         </button>
 
-        <p className="text-sm text-center text-slate-600">
+        <p className="text-sm text-center text-ink-muted">
           Already have an account?{" "}
-          <Link to="/signin" className="text-blue-600 font-medium hover:underline">
+          <Link
+            to="/signin"
+            className="text-emerald-600 font-semibold hover:text-blue-950 hover:underline transition"
+          >
             Sign in
           </Link>
         </p>

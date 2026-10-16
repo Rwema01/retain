@@ -21,21 +21,17 @@ export default function ExpensesPage() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  // Staged filters for advanced (date/amount) inputs
   const [localStartDate, setLocalStartDate] = useState(filters.startDate);
   const [localEndDate, setLocalEndDate] = useState(filters.endDate);
   const [localMinAmount, setLocalMinAmount] = useState(filters.minAmount);
   const [localMaxAmount, setLocalMaxAmount] = useState(filters.maxAmount);
 
-  // Debounce search input (300ms)
   const debouncedSearch = useDebounce(filters.search, 300);
 
-  // Load categories once
   useEffect(() => {
     api.get<Category[]>("/categories").then((r) => setCategories(r.data));
   }, []);
 
-  // Pick up ?q= from navbar global search
   useEffect(() => {
     const q = searchParams.get("q");
     if (q) {
@@ -45,7 +41,6 @@ export default function ExpensesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load expenses whenever filters change OR reloadKey bumps
   useEffect(() => {
     setLoading(true);
     const params: Record<string, string | number> = {
@@ -108,33 +103,36 @@ export default function ExpensesPage() {
     setShowForm(true);
   };
 
+  const inputClass =
+    "bg-white text-black placeholder:text-gray-500 border border-rim rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent";
+
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-4">
+    <div className="space-y-4">
       <div className="flex flex-wrap justify-between items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Expenses</h1>
-          <p className="text-sm text-slate-500">{total} total</p>
+          <h1 className="text-2xl font-bold text-white">Expenses</h1>
+          <p className="text-sm text-[#b8d4b8]">{total} total</p>
         </div>
         <button
           onClick={openAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+          className="bg-emerald-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-950 transition"
         >
           + Add Expense
         </button>
       </div>
 
       {/* Quick live filters */}
-      <div className="bg-white p-4 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="bg-card border border-rim p-4 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-3">
         <input
           placeholder="Search title…"
           value={filters.search}
           onChange={(e) => dispatch(setFilter({ search: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputClass}
         />
         <select
           value={filters.category}
           onChange={(e) => dispatch(setFilter({ category: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputClass}
         >
           <option value="">All categories</option>
           {categories.map((c) => (
@@ -146,7 +144,7 @@ export default function ExpensesPage() {
         <select
           value={filters.paymentMethod}
           onChange={(e) => dispatch(setFilter({ paymentMethod: e.target.value }))}
-          className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputClass}
         >
           <option value="">All methods</option>
           {["cash", "card", "upi", "bank", "other"].map((m) => (
@@ -161,7 +159,7 @@ export default function ExpensesPage() {
             onChange={(e) =>
               dispatch(setFilter({ sortBy: e.target.value as "date" | "amount" }))
             }
-            className="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`${inputClass} flex-1`}
           >
             <option value="date">Date</option>
             <option value="amount">Amount</option>
@@ -171,7 +169,7 @@ export default function ExpensesPage() {
             onChange={(e) =>
               dispatch(setFilter({ order: e.target.value as "asc" | "desc" }))
             }
-            className="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`${inputClass} flex-1`}
           >
             <option value="desc">↓ Desc</option>
             <option value="asc">↑ Asc</option>
@@ -180,31 +178,31 @@ export default function ExpensesPage() {
       </div>
 
       {/* Advanced filters with Apply */}
-      <div className="bg-white p-4 rounded-xl shadow-sm grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+      <div className="bg-card border border-rim p-4 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">
+          <label className="block text-xs font-medium text-ink-muted mb-1">
             Start date
           </label>
           <input
             type="date"
             value={localStartDate}
             onChange={(e) => setLocalStartDate(e.target.value)}
-            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`${inputClass} w-full`}
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">
+          <label className="block text-xs font-medium text-ink-muted mb-1">
             End date
           </label>
           <input
             type="date"
             value={localEndDate}
             onChange={(e) => setLocalEndDate(e.target.value)}
-            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`${inputClass} w-full`}
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">
+          <label className="block text-xs font-medium text-ink-muted mb-1">
             Min $
           </label>
           <input
@@ -212,12 +210,12 @@ export default function ExpensesPage() {
             placeholder="0"
             value={localMinAmount}
             onChange={(e) => setLocalMinAmount(e.target.value)}
-            className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`${inputClass} w-full`}
           />
         </div>
         <div className="flex gap-2">
           <div className="flex-1">
-            <label className="block text-xs font-medium text-slate-600 mb-1">
+            <label className="block text-xs font-medium text-ink-muted mb-1">
               Max $
             </label>
             <input
@@ -225,12 +223,12 @@ export default function ExpensesPage() {
               placeholder="∞"
               value={localMaxAmount}
               onChange={(e) => setLocalMaxAmount(e.target.value)}
-              className="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`${inputClass} w-full`}
             />
           </div>
           <button
             onClick={applyAdvanced}
-            className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-900 transition self-end"
+            className="bg-blue-950 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-500 transition self-end"
           >
             Apply
           </button>
@@ -240,19 +238,19 @@ export default function ExpensesPage() {
       <div className="flex justify-end">
         <button
           onClick={handleReset}
-          className="text-sm text-slate-500 hover:text-slate-800 underline"
+          className="text-sm text-[#b8d4b8] hover:text-white underline"
         >
           Reset filters
         </button>
       </div>
 
       {/* List */}
-      <div className="bg-white rounded-xl shadow-sm divide-y divide-slate-100">
+      <div className="bg-card border border-rim rounded-xl divide-y divide-rim">
         {loading && (
-          <p className="p-6 text-center text-slate-500">Loading…</p>
+          <p className="p-6 text-center text-ink-muted">Loading…</p>
         )}
         {!loading && expenses.length === 0 && (
-          <p className="p-6 text-center text-slate-500">
+          <p className="p-6 text-center text-ink-muted">
             No expenses match your filters.
           </p>
         )}
@@ -263,32 +261,30 @@ export default function ExpensesPage() {
               className="p-4 flex flex-wrap items-center gap-3 md:justify-between"
             >
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-slate-800 truncate">
-                  {e.title}
-                </p>
-                <p className="text-sm text-slate-500">
+                <p className="font-medium text-ink truncate">{e.title}</p>
+                <p className="text-sm text-ink-muted">
                   {e.category?.icon} {e.category?.name} • {e.paymentMethod} •{" "}
                   {new Date(e.date).toLocaleDateString()}
                 </p>
                 {e.notes && (
-                  <p className="text-xs text-slate-400 mt-1 truncate">
+                  <p className="text-xs text-ink-muted/70 mt-1 truncate">
                     {e.notes}
                   </p>
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-semibold text-slate-800">
+                <span className="font-semibold text-ink">
                   ${e.amount.toFixed(2)}
                 </span>
                 <button
                   onClick={() => openEdit(e)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-sm text-accent hover:text-accent-hover font-medium"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(e._id)}
-                  className="text-sm text-red-600 hover:text-red-800 font-medium"
+                  className="text-sm text-red-400 hover:text-red-300 font-medium"
                 >
                   Delete
                 </button>
@@ -304,11 +300,10 @@ export default function ExpensesPage() {
             <button
               key={i}
               onClick={() => dispatch(setPage(i + 1))}
-              className={`px-3 py-1.5 rounded-lg text-sm transition ${
-                filters.page === i + 1
-                  ? "bg-blue-600 text-white"
-                  : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50"
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-sm transition ${filters.page === i + 1
+                ? "bg-accent text-base"
+                : "bg-card border border-rim text-ink-muted hover:bg-elevated hover:text-ink"
+                }`}
             >
               {i + 1}
             </button>

@@ -52,38 +52,39 @@ export default function ExpenseForm({
     }
   };
 
+  const inputClass =
+    "w-full bg-white text-black placeholder:text-gray-500 border border-rim rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent";
+
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl"
+        className="bg-card border border-rim rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl"
       >
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-ink">
           {expense ? "Edit Expense" : "Add Expense"}
         </h2>
 
         {error && (
-          <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-lg">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Title
-          </label>
+          <label className="block text-sm font-medium text-ink mb-1">Title</label>
           <input
             required
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
             placeholder="Lunch at cafe"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Amount
             </label>
             <input
@@ -95,11 +96,11 @@ export default function ExpenseForm({
               onChange={(e) =>
                 setForm({ ...form, amount: Number(e.target.value) })
               }
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Date
             </label>
             <input
@@ -107,21 +108,21 @@ export default function ExpenseForm({
               type="date"
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={inputClass}
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Category
             </label>
             <select
               required
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={inputClass}
             >
               {categories.map((c) => (
                 <option key={c._id} value={c._id}>
@@ -131,7 +132,7 @@ export default function ExpenseForm({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Payment
             </label>
             <select
@@ -143,7 +144,7 @@ export default function ExpenseForm({
                   paymentMethod: e.target.value as PaymentMethod,
                 })
               }
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={inputClass}
             >
               {["cash", "card", "upi", "bank", "other"].map((m) => (
                 <option key={m} value={m}>
@@ -155,14 +156,14 @@ export default function ExpenseForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Notes (optional)
           </label>
           <textarea
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
             rows={2}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
             placeholder="Optional notes"
           />
         </div>
@@ -171,14 +172,14 @@ export default function ExpenseForm({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+            className="px-4 py-2 rounded-lg border border-rim text-ink-muted hover:bg-elevated hover:text-ink transition"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+            className="px-4 py-2 rounded-lg bg-blue-950 text-white font-medium hover:bg-emerald-500 disabled:opacity-50 transition"
           >
             {saving ? "Saving…" : "Save"}
           </button>

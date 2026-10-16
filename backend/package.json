@@ -6,15 +6,15 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js","seed": "node src/scripts/seed.js"
+    "start": "node src/server.js",
+    "seed": "node src/scripts/seed.js"
   },
-  "keywords": [
-    "expense",
-    "budget",
-    "api"
-  ],
+  "keywords": ["expense", "budget", "api"],
   "author": "Rwema01",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",

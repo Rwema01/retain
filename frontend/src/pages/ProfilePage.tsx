@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import PasswordInput from "../components/PasswordInput";
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -16,6 +17,9 @@ export default function ProfilePage() {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+
+  const inputClass =
+    "w-full bg-white text-black placeholder:text-gray-500 border border-rim rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent";
 
   const handleProfile = async (e: FormEvent) => {
     e.preventDefault();
@@ -56,48 +60,44 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 md:p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Profile</h1>
+    <div className="max-w-2xl space-y-6">
+      <h1 className="text-2xl font-bold text-white">Profile</h1>
 
       <form
         onSubmit={handleProfile}
-        className="bg-white rounded-xl shadow-sm p-5 space-y-4"
+        className="bg-card border border-rim rounded-xl p-5 space-y-4"
       >
-        <h2 className="font-bold text-slate-800">Personal Information</h2>
+        <h2 className="font-bold text-ink">Personal Information</h2>
 
         {profileMessage && (
-          <p className="text-sm text-green-700 bg-green-50 rounded-lg p-3">
+          <p className="text-sm text-accent bg-accent/10 border border-accent/30 rounded-lg p-3">
             {profileMessage}
           </p>
         )}
         {profileError && (
-          <p className="text-sm text-red-700 bg-red-50 rounded-lg p-3">
+          <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg p-3">
             {profileError}
           </p>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Name
-          </label>
+          <label className="block text-sm font-medium text-ink mb-1">Name</label>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            Email
-          </label>
+          <label className="block text-sm font-medium text-ink mb-1">Email</label>
           <input
             required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
 
@@ -105,7 +105,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={savingProfile}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+            className="bg-blue-950 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-500 disabled:opacity-50 transition"
           >
             {savingProfile ? "Saving…" : "Save Changes"}
           </button>
@@ -114,54 +114,50 @@ export default function ProfilePage() {
 
       <form
         onSubmit={handlePassword}
-        className="bg-white rounded-xl shadow-sm p-5 space-y-4"
+        className="bg-card border border-rim rounded-xl p-5 space-y-4"
       >
-        <h2 className="font-bold text-slate-800">Change Password</h2>
+        <h2 className="font-bold text-ink">Change Password</h2>
 
         {passwordMessage && (
-          <p className="text-sm text-green-700 bg-green-50 rounded-lg p-3">
+          <p className="text-sm text-accent bg-accent/10 border border-accent/30 rounded-lg p-3">
             {passwordMessage}
           </p>
         )}
         {passwordError && (
-          <p className="text-sm text-red-700 bg-red-50 rounded-lg p-3">
+          <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg p-3">
             {passwordError}
           </p>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Current password
           </label>
-          <input
+          <PasswordInput
             required
-            type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             New password
           </label>
-          <input
+          <PasswordInput
             required
-            type="password"
             minLength={6}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <p className="text-xs text-slate-500 mt-1">At least 6 characters</p>
+          <p className="text-xs text-ink-muted mt-1">At least 6 characters</p>
         </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={savingPassword}
-            className="bg-slate-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-slate-900 disabled:opacity-50 transition"
+            className="bg-blue-950 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-500 disabled:opacity-50 transition"
           >
             {savingPassword ? "Updating…" : "Update Password"}
           </button>

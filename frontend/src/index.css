@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme inline {
+  /* Body/card surfaces — white */
+  --color-card: #ffffff;
+  --color-elevated: #f1f5f9;
+  --color-rim: #e2e8f0;
+  --color-ink: #0f172a;
+  --color-ink-muted: #64748b;
+
+  /* Accents */
+  --color-accent: #10b981;
+  --color-accent-hover: #059669;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+
+  /* Dark surfaces (sidebar + topbar + page bg) */
+  --color-dark-bg: #001208;
+  --color-dark-surface: #0d3310;
+  --color-dark-border: #1a4a1a;
+  --color-dark-ink: #ffffff;
+  --color-dark-muted: #b8d4b8;
+}
+
+html,
+body,
+#root {
+  background-color: #001208;
+  color: #ffffff;
+  min-height: 100%;
+}

@@ -12,7 +12,7 @@ export function ProtectedRoute({ children, adminOnly = false }: Props) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
+      <div className="min-h-screen flex items-center justify-center text-ink-muted">
         Loading…
       </div>
     );
