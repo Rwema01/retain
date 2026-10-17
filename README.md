@@ -114,9 +114,17 @@ Each part of the project has its own detailed README:
 
 ---
 
-## 📸 Screenshots
+## 🧠 Reflections
 
-Screenshots of the deployed app (dashboard, expenses, budget, admin, profile) are available in each section's README.
+Going into this project, I expected the coding to be the hardest part. It wasn't. Deployment was.
+
+Locally, everything just worked — until I tried to put it on the internet. MongoDB Atlas refused connections from Render's servers. The frontend couldn't talk to the backend because CORS hadn't been configured for the Vercel URL. Port 5000 was silently hijacked by macOS AirPlay on my own machine. Each of these problems only appeared in production, and each one taught me something textbooks can't.
+
+The second thing I learned was that structure pays off. Keeping the backend and frontend in one repository with separate, well-documented READMEs made deploying each service to its own host (Render, Vercel) straightforward. When something broke, I knew exactly which folder to open.
+
+If I rebuilt this from scratch, I would write tests earlier and add a shared `types/` package between frontend and backend so both sides stayed in sync automatically. I would also not use free-tier hosting for demos — the 15-minute sleep delay is a real UX cost.
+
+What I'm most proud of is that a stranger can now visit the live URL, sign up, log expenses, watch their budget change color, and — if they're an admin — manage categories and see platform-wide insights. The features work end-to-end, not just on my laptop.
 
 ---
 
