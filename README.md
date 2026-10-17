@@ -8,8 +8,10 @@ A full-stack web application for tracking personal expenses and managing monthly
 
 ## 🔗 Live Application
 
-- **Frontend (live):** https://retain-alpha.vercel.app
-- **Backend API (live):** https://retain-backend-3fxt.onrender.com
+| Service | URL |
+|---|---|
+| Frontend (Vercel) | https://retain-alpha.vercel.app |
+| Backend API (Render) | https://retain-backend-3fxt.onrender.com |
 
 > **Note:** The backend runs on Render's free tier, which sleeps after 15 minutes of inactivity. The first request after idling may take 30-50 seconds to wake up. Subsequent requests are instant.
 
@@ -79,8 +81,9 @@ You can also sign up a fresh user from `/signup`.
 
 Each part of the project has its own detailed README:
 
-- **Backend:** see [backend/README.md](./backend/README.md)
-- **Frontend:** see [frontend/README.md](./frontend/README.md)
+**Backend:** see [backend/README.md](./backend/README.md)
+
+**Frontend:** see [frontend/README.md](./frontend/README.md)
 
 ### Quick start
 
