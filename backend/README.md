@@ -8,9 +8,9 @@ Built with Node.js, Express, and MongoDB.
 
 ## 🔗 Links
 
-- **Frontend repo:** _[to be added after frontend setup]_
-- **Frontend (live):** _[to be added after deployment]_
-- **Backend API (live):** _[to be added after deployment]_
+- **Frontend repo:** [github.com/Rwema01/retain/tree/main/frontend](https://github.com/Rwema01/retain/tree/main/frontend)
+- **Frontend (live):** https://retain-alpha.vercel.app
+- **Backend API (live):** https://retain-backend-3fxt.onrender.com
 
 ---
 
@@ -85,29 +85,30 @@ Built with Node.js, Express, and MongoDB.
 
 ## 📁 Project Structure
 
-    retain-backend/
-    ├── src/
-    │   ├── server.js                 # Express app entry point
-    │   ├── middleware/
-    │   │   └── auth.js               # protect + adminOnly
-    │   ├── models/
-    │   │   ├── User.js
-    │   │   ├── Category.js
-    │   │   ├── Expense.js
-    │   │   └── Budget.js
-    │   ├── routes/
-    │   │   ├── auth.js               # signup / signin / me
-    │   │   ├── categories.js         # list categories for users
-    │   │   ├── expenses.js           # CRUD + filters + pagination
-    │   │   ├── budgets.js            # monthly budget logic
-    │   │   ├── dashboard.js          # user dashboard aggregation
-    │   │   └── admin.js              # category admin + insights
-    │   └── scripts/
-    │       └── seed.js               # creates admin + default category
-    ├── .env                          # local secrets (not committed)
-    ├── .gitignore
-    ├── package.json
-    └── README.md
+    retain/
+    └── backend/
+        ├── src/
+        │   ├── server.js                 # Express app entry point
+        │   ├── middleware/
+        │   │   └── auth.js               # protect + adminOnly
+        │   ├── models/
+        │   │   ├── User.js
+        │   │   ├── Category.js
+        │   │   ├── Expense.js
+        │   │   └── Budget.js
+        │   ├── routes/
+        │   │   ├── auth.js               # signup / signin / me
+        │   │   ├── categories.js         # list categories for users
+        │   │   ├── expenses.js           # CRUD + filters + pagination
+        │   │   ├── budgets.js            # monthly budget logic
+        │   │   ├── dashboard.js          # user dashboard aggregation
+        │   │   └── admin.js              # category admin + insights
+        │   └── scripts/
+        │       └── seed.js               # creates admin + default category
+        ├── .env                          # local secrets (not committed)
+        ├── .gitignore
+        ├── package.json
+        └── README.md
 
 ---
 
@@ -121,8 +122,8 @@ Built with Node.js, Express, and MongoDB.
 
 ### 1. Clone the repository
 
-    git clone https://github.com/Rwema01/retain-backend.git
-    cd retain-backend
+    git clone https://github.com/Rwema01/retain.git
+    cd retain/backend
 
 ### 2. Install dependencies
 
@@ -130,7 +131,7 @@ Built with Node.js, Express, and MongoDB.
 
 ### 3. Create a `.env` file
 
-In the project root, create `.env` with:
+In the `backend/` folder, create `.env` with:
 
     PORT=5000
     MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/retain?retryWrites=true&w=majority
@@ -175,7 +176,7 @@ See the table above. **Never commit `.env` to version control** — it is alread
 ## 📡 API Reference
 
 Base URL (local): `http://localhost:5000/api`  
-Base URL (deployed): _[to be added]_
+Base URL (deployed): `https://retain-backend-3fxt.onrender.com/api`
 
 All endpoints except `/health`, `/auth/signup`, and `/auth/signin` require an `Authorization: Bearer <token>` header.
 
@@ -335,14 +336,19 @@ Then use the returned `token` in subsequent requests:
 
 ---
 
-## 🔑 Development Admin Credentials
+## 🔑 Demo Admin Credentials
 
-The seed script creates an admin user for testing:
+The seed script creates a fresh admin user for testing:
 
 - **Email:** `admin@retain.com`
 - **Password:** `admin1234`
 
-⚠️ These are development credentials only. Change them before any public deployment.
+The deployed demo also uses a pre-populated admin account with sample data:
+
+- **Email:** `admin@example.com`
+- **Password:** `test1234`
+
+⚠️ These are development credentials only. Change them before any real-world deployment.
 
 ---
 
@@ -389,11 +395,13 @@ Deployed on Render (free tier) with MongoDB Atlas as the managed database.
 
 1. Push code to GitHub
 2. Create a Web Service on Render pointing at this repository
-3. Set environment variables in Render (`MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, `PORT`)
-4. Build command: `npm install`
-5. Start command: `npm start`
-6. After first deploy, run the seed script via Render's shell: `npm run seed`
-7. In MongoDB Atlas → Network Access, add `0.0.0.0/0` to allow connections from Render's rotating IPs
+3. Set **Root Directory** to `backend`
+4. Set environment variables in Render (`MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, `NODE_ENV`)
+5. Build command: `npm install`
+6. Start command: `npm start`
+7. After first deploy, run the seed script via Render's shell: `npm run seed`
+8. In MongoDB Atlas → Network Access, add `0.0.0.0/0` to allow connections from Render's rotating IPs (for free-tier compatibility; restrict to specific IPs in production)
+9. After the frontend is deployed, update `CLIENT_URL` to the frontend's production URL so CORS allows requests from it
 
 ---
 

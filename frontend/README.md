@@ -7,8 +7,8 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 ## 🔗 Links
 
 - **Backend repo:** [github.com/Rwema01/retain/tree/main/backend](https://github.com/Rwema01/retain/tree/main/backend)
-- **Backend API (live):** _[to be added after deployment]_
-- **Frontend (live):** _[to be added after deployment]_
+- **Backend API (live):** https://retain-backend-3fxt.onrender.com
+- **Frontend (live):** https://retain-alpha.vercel.app
 
 ---
 
@@ -16,7 +16,7 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 
 | Layer | Technology |
 |---|---|
-| Framework | React 18 + Vite |
+| Framework | React 19 + Vite |
 | Language | TypeScript |
 | Styling | Tailwind CSS 4 |
 | Routing | React Router 7 |
@@ -35,6 +35,8 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 - Auth state managed by React Context
 - Protected routes via a `ProtectedRoute` wrapper
 - Role-based access (admin vs. user)
+- Password visibility toggle on all password inputs
+- Profile page with name/email update and password change
 
 ### Expenses
 - Full CRUD from a modal form
@@ -45,13 +47,13 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 - Pagination
 
 ### Budgets
-- Set a monthly budget
+- Set a monthly budget with explicit Apply for month picker
 - Progress bar with color-coded status (`within` / `approaching` / `over`)
 
 ### Dashboard
-- Month picker
+- Month picker with Apply button
 - Total spent, remaining budget, highest expense cards
-- Pie chart of spending by category
+- Donut chart of spending by category
 - Recent expenses list
 
 ### Admin
@@ -61,22 +63,30 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 
 ### Profile
 - Update name and email
-- Change password
+- Change password (with visibility toggles)
 
 ### Redux Usage
 - The `filters` slice stores search, filters, sorting, and pagination
 - Matches the assignment requirement that filtering/sorting/search live in Redux
 
+### Responsive Design
+- Desktop: full sidebar + multi-column grids
+- Tablet (~768px): sidebar visible, content adapts
+- Mobile (~400px): sidebar hides behind a hamburger menu with backdrop
+
 ---
 
 ## 📁 Project Structure
 
-    frontend/
+    retain/frontend/
     ├── src/
     │   ├── components/         # Reusable UI
     │   │   ├── ExpenseForm.tsx
-    │   │   ├── Navbar.tsx
-    │   │   └── ProtectedRoute.tsx
+    │   │   ├── Logo.tsx
+    │   │   ├── PasswordInput.tsx
+    │   │   ├── ProtectedRoute.tsx
+    │   │   ├── Sidebar.tsx
+    │   │   └── TopBar.tsx
     │   ├── context/
     │   │   └── AuthContext.tsx
     │   ├── hooks/
@@ -115,19 +125,24 @@ React + TypeScript client for **Retain**, a personal expense and budget manageme
 - Node.js 18+
 - The Retain backend running locally (see [backend README](../backend/README.md))
 
-### 1. Install dependencies
+### 1. Clone the repository
+
+    git clone https://github.com/Rwema01/retain.git
+    cd retain/frontend
+
+### 2. Install dependencies
 
     npm install
 
-### 2. Configure environment
+### 3. Configure environment
 
-Create `.env` in this folder with:
+Create `.env` in the `frontend/` folder with:
 
     VITE_API_URL=http://localhost:5000/api
 
 The frontend reads this at build time. Restart the dev server after changing it.
 
-### 3. Run the dev server
+### 4. Run the dev server
 
     npm run dev
 
@@ -135,12 +150,21 @@ Opens at `http://localhost:5173`.
 
 ---
 
-## 🔐 Test Credentials
+## 🔐 Demo Credentials
 
-Use the seeded admin to explore admin features:
+Use these accounts on the deployed app:
 
+**Admin (with sample data):**
+- **Email:** `admin@example.com`
+- **Password:** `test1234`
+
+**Seeded admin (fresh, no data):**
 - **Email:** `admin@retain.com`
 - **Password:** `admin1234`
+
+**Regular user:**
+- **Email:** `user@example.com`
+- **Password:** `test1234`
 
 Or sign up a fresh user from `/signup`.
 
@@ -148,29 +172,53 @@ Or sign up a fresh user from `/signup`.
 
 ## 🧪 What to Try
 
-1. Sign in and land on the Dashboard
-2. Add an expense from the Expenses page
-3. Try live search, category filters, advanced filters with Apply, and sorting
-4. Set a monthly budget and watch the status bar change color
-5. Sign in as the seeded admin and open the Admin page
-6. Add a category, rename it, then delete it — watch expenses reassign to Uncategorized
-7. Update your profile from the dropdown menu
+1. Sign in with `admin@example.com` / `test1234`
+2. Land on the Dashboard with sample data loaded
+3. Add an expense from the Expenses page
+4. Try live search (type "coffee"), category filters, advanced filters with Apply, and sorting
+5. Set a monthly budget and watch the status bar change color (green → amber → red)
+6. Open the Admin page (only visible to admins)
+7. Add a category, rename it, then delete it — watch expenses reassign to Uncategorized
+8. Update your profile from the top bar
+9. Resize the browser to mobile width (~400px) — sidebar hides behind a hamburger menu
 
 ---
 
 ## 🚢 Deployment
 
-Deployed on Vercel.
+Deployed on **Vercel** (Hobby free tier).
 
 **Deployment checklist:**
 
-1. Push to GitHub
-2. Import the repo on Vercel
-3. Set **Root Directory** to `frontend`
-4. Add environment variable `VITE_API_URL` pointing at the deployed backend
-5. Deploy
+1. Push code to GitHub (this repo uses a monorepo structure — frontend lives in `frontend/`).
+2. Import the `retain` repo on Vercel.
+3. Set **Root Directory** to `frontend`.
+4. Framework Preset auto-detects **Vite**.
+5. Add environment variable:
+   - **`VITE_API_URL`** = `https://retain-backend-3fxt.onrender.com/api`
+6. Click **Deploy**.
 
-Vite will produce a static build output in `dist/`.
+Vite produces a static build output in `dist/`.
+
+**Post-deployment:**
+- After Vercel assigns the production URL (e.g. `https://retain-alpha.vercel.app`), update the backend's `CLIENT_URL` environment variable on Render so CORS allows requests from the frontend.
+- Redeploy the backend on Render for the CORS change to take effect.
+
+**Note on free tier:** Render backend sleeps after 15 minutes of inactivity. First request after sleep takes 30-50 seconds (cold start). Subsequent requests are fast.
+
+---
+
+## 🎨 Design
+
+The app uses a custom dark green theme built on Tailwind CSS 4 theme tokens:
+
+- **Page background:** `#001208` (deep green-black)
+- **Sidebar / Top bar:** `#042404` (dark green)
+- **Cards:** white
+- **Accent color:** emerald (`#10b981` → hover `#059669`)
+- **Sign out:** red with power icon
+
+All colors are defined in `src/index.css` via `@theme` — changing them there updates the entire app.
 
 ---
 
